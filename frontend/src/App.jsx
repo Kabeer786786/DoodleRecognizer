@@ -3,16 +3,23 @@ import Home from './pages/Home';
 import Question from './pages/Question';
 import Answer from './pages/Answer';
 import ScoreCard from './pages/ScoreCard';
+import Loading from './pages/Loading';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home'); // Track the current page
+  const [score, setScore] = useState(0); // Track the score
+  const [questionNumber, setQuestionNumber] = useState(1); // Track the question number
+  const [questions, setQuestions] = useState([]); // Track the questions
+  const [answers, setAnswers] = useState([]); // Track the answers
+  const [selectedAnswer, setSelectedAnswer] = useState(''); // Track the selected answer
 
   return (
     <>
-      {currentPage === 'home' && <Home setCurrentPage={setCurrentPage} />}
-      {currentPage === 'question' && <Question  setCurrentPage={setCurrentPage} />}
-      {currentPage === 'answer' && <Answer  setCurrentPage={setCurrentPage} />}
-      {currentPage === 'scorecard' && <ScoreCard  setCurrentPage={setCurrentPage} />}
+      {currentPage === 'loading' && <Loading questions={questions}  />}
+      {currentPage === 'home' && <Home setCurrentPage={setCurrentPage} questions={questions} setQuestions={setQuestions} />}
+      {currentPage === 'question' && <Question  setCurrentPage={setCurrentPage}  questionNumber={questionNumber} setQuestionNumber={setQuestionNumber} questions={questions} setQuestions={setQuestions} answers={answers} setAnswers={setAnswers} />}
+      {currentPage === 'answer' && <Answer score={score} setScore={setScore}  questionNumber={questionNumber} setQuestionNumber={setQuestionNumber} setCurrentPage={setCurrentPage} questions={questions} setQuestions={setQuestions} answers={answers} setAnswers={setAnswers} selectedAnswer={selectedAnswer} setSelectedAnswer={setSelectedAnswer} />}
+      {currentPage === 'scorecard' && <ScoreCard  setCurrentPage={setCurrentPage}  questionNumber={questionNumber} setQuestionNumber={setQuestionNumber} questions={questions} setQuestions={setQuestions} answers={answers} setAnswers={setAnswers}   />}
     </>
   );
 }

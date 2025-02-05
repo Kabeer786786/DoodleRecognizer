@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useRef, useState, useEffect } from "react";
 import { FaXmark } from "react-icons/fa6";
 import { FaAngleDoubleRight } from "react-icons/fa";
@@ -5,7 +6,7 @@ import { FaEraser } from "react-icons/fa";
 import "../assets/styles.css"
 import { motion } from "framer-motion";
 
-export default function Answer({ setCurrentPage }) {
+export default function Answer({ score, setScore,  questionNumber, setQuestionNumber ,setCurrentPage, questions, setQuestions, answers, setAnswers, selectedAnswer, setSelectedAnswer }) {
   const canvasRef = useRef(null);
   const [result, setResult] = useState("");
   const [drawing, setDrawing] = useState(false);
@@ -16,6 +17,7 @@ export default function Answer({ setCurrentPage }) {
       setTimer((prev) => {
         if (prev < 1) {
           clearInterval(countdown);
+          setQuestionNumber((cnt) => cnt + 1);
           handleNextQuestion();
           return 0;
         }
@@ -151,12 +153,18 @@ export default function Answer({ setCurrentPage }) {
 
   let handleClose = () => {
     setTimeout(() => {
+      setQuestionNumber(1);
       setCurrentPage('home');
     }, 300);
   };
 
   let handleNextQuestion = () => {
     setTimeout(() => {
+      if (questionNumber ===  (questions.length)) {
+        setCurrentPage('scorecard');
+        return;
+      }
+      setQuestionNumber((cnt) => cnt + 1);
       setCurrentPage('question');
     }, 300);
   }
@@ -188,6 +196,7 @@ export default function Answer({ setCurrentPage }) {
           >
             <FaXmark size={"26px"} />
           </button>
+          <h1 className="flex items-center absolute left-30 text-2xl top-4"> { questionNumber <  (questions.length+1) ? questions[questionNumber-1].question : "🎉" } </h1>
 
           <div className="flex gap-4 ml-auto ">
             <div className="h-fit w-fit px-5 py-2 rounded-lg shadow-[5px_5px_0px_0px_#68A2B1] bg-[#80C6D7] border border-[#68A2B1]">

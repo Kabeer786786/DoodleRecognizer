@@ -1,16 +1,81 @@
+/* eslint-disable react/prop-types */
 import { FaHome } from "react-icons/fa";
 import "../assets/styles.css";
 import { motion } from 'framer-motion';
 import { FaLinkedin, FaQuestion } from "react-icons/fa6";
+import { useState } from "react";
 
-export default function Home({ setCurrentPage }) {
+export default function Home({ setCurrentPage, questions, setQuestions }) {
+  const [participantName, setParticipantName] = useState('');
+  const [error, setError] = useState('');
+
+  const getRandomItems = (arr, num) => {
+    let shuffled = [...arr].sort(() => Math.random() - 0.5); // Shuffle array
+    return shuffled.slice(0, num); // Pick `num` elements
+  };
+
+  const generateQuestions = (questions, easylevel, mediumlevel, hardlevel) => {
+    const easy = questions.filter(q => q.category === 'easy');
+    const medium = questions.filter(q => q.category === 'medium');
+    const hard = questions.filter(q => q.category === 'hard');
+
+    const selectedQuestions = [
+      ...getRandomItems(easy, easylevel),
+      ...getRandomItems(medium, mediumlevel),
+      ...getRandomItems(hard, hardlevel)
+    ];
+    return selectedQuestions // Shuffle final selection
+  };
+
+  // Example dataset
+  const allQuestions = [
+    { id: 1, category: "easy", question: "Triangle" },
+    { id: 2, category: "easy", question: "Circle" },
+    { id: 3, category: "easy", question: "Square" },
+    { id: 4, category: "easy", question: "Sun" },
+    { id: 5, category: "easy", question: "Line" },
+    { id: 6, category: "easy", question: "Moon" },
+    { id: 7, category: "medium", question: "Cloud" },
+    { id: 8, category: "medium", question: "Face" },
+    { id: 9, category: "medium", question: "Smiley Face" },
+    { id: 10, category: "medium", question: "Apple" },
+    { id: 11, category: "medium", question: "Lightning" },
+    { id: 12, category: "medium", question: "Chair" },
+    { id: 13, category: "hard", question: "Bench" },
+    { id: 14, category: "hard", question: "Bread" },
+    { id: 15, category: "hard", question: "Mountain" },
+    { id: 16, category: "hard", question: "Grapes" },
+    { id: 17, category: "hard", question: "Laptop" },
+    { id: 18, category: "hard", question: "Tooth" },
+    { id: 19, category: "hard", question: "Table" },
+    { id: 20, category: "hard", question: "Pants" },
+  ];
+
   let handlenewbie = () => {
+    if (participantName === '') {
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+      setError("Please Enter your Name *");
+      return;
+    }
+    const selectedQuestions = generateQuestions(allQuestions, 2, 2, 1);
+    setQuestions(selectedQuestions);
     setTimeout(() => {
       setCurrentPage('question');
     }, 300);
   };
 
   let handlepros = () => {
+    if (participantName === '') {
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+      setError("Please Enter your Name *");
+      return;
+    }
+    const selectedQuestions = generateQuestions(allQuestions, 1, 3, 2);
+    setQuestions(selectedQuestions);
     setTimeout(() => {
       setCurrentPage('question');
     }, 300);
@@ -20,6 +85,10 @@ export default function Home({ setCurrentPage }) {
       setCurrentPage('home');
     }, 300);
   }
+  const handleChange = (event) => {
+    setParticipantName(event.target.value); // Update state when input changes
+  };
+
   return (
     <div className="flex w-screen h-screen bg-[#90ddf0] xl:p-10 relative font-comic overflow-hidden">
       <div className="w-full rounded-xl m-auto h-full flex relative overflow-hidden shadow-[0px_0px_5px_5px_rgba(0,0,0,0.3)] bg-[#f0edee]" >
@@ -44,10 +113,11 @@ export default function Home({ setCurrentPage }) {
                   transform perspective-[500px] rotate-y-[-10deg]">
             <img src="pandahome2.png" alt="panda images" className="z-50" />
 
-            <div className="form pb-10 -mt-2 max-w-sm">
+            <div className="form pb-12 -mt-2 max-w-sm">
               <div className="h-16 px-5 py-4 rounded-lg shadow-[0px_-6px_0px_2px_#68A2B1] bg-[#f0edee] border-[#68A2B1]">
-                <input type="text" placeholder="Enter your Name...." className="text-[#2c666e] font-semibold text-2xl focus:outline-none" />
+                <input type="text" value={participantName} onChange={handleChange} placeholder="Enter your Name...." className="text-[#2c666e] font-semibold text-2xl focus:outline-none" required />
               </div>
+              <span className="text-red-600 font-semibold mt-2 ml-2 text-xl absolute">{error}</span>
             </div>
             <div className="grid grid-cols-2 w-sm gap-4 ">
               <button

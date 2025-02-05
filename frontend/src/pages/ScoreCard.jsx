@@ -1,17 +1,17 @@
 import { FaQuestion, FaXmark } from "react-icons/fa6";
-import { FaAngleDoubleRight, FaHome } from "react-icons/fa";
-import { FaEraser } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 import "../assets/styles.css"
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function ScoreCard({ setCurrentPage }) {
+export default function ScoreCard({ setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers  }) {
   let handleClose = () => {
     setTimeout(() => {
+      setQuestionNumber(1);
       setCurrentPage('home');
     }, 300);
   };
-
+ 
   let handleNextQuestion = () => {
     setCurrentPage('question');
   };
@@ -73,7 +73,7 @@ export default function ScoreCard({ setCurrentPage }) {
         <AnimatePresence mode="wait">
           {isVisible && (
             <motion.div
-              className="w-full relative m-auto"
+              className="w-full h-full relative m-auto"
               initial={{ x: "100%", opacity: 0 }}
               animate={{ x: 0, opacity: 1, transition: { duration: 1.0 } }}
               exit={{ x: "-100%", opacity: 0, transition: { duration: 1.0, ease: "easeInOut" } }}

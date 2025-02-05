@@ -1,21 +1,29 @@
+/* eslint-disable react/prop-types */
 import { FaXmark } from "react-icons/fa6";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import "../assets/styles.css"
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 
-export default function Question({ setCurrentPage  }) {
+export default function Question({ setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers  }) {
   let handleClose = () => {
     setTimeout(() => {
+      setQuestionNumber(1);
       setCurrentPage('home');
     }, 300);
-  };
+  }; 
 
   let handleNextQuestion = () => {
+    setIsVisible(false);
     setTimeout(() => {
-      setCurrentPage(()=>'question');
-    }, 300);
+      setCurrentPage(questionNumber ===  (questions.length) ? 'scorecard' : 'loading'); // Temporary state to force re-render
+      setTimeout(() => {
+        setQuestionNumber((prev) => prev + 1);
+        setCurrentPage(questionNumber ===  (questions.length) ? 'scorecard' : 'question');
+      }, 100); // Small delay before switching back
+    }, 500);
   };
+  
   let handleAnswer = () => {
     setIsVisible(false);
     setTimeout(() => {
@@ -46,7 +54,7 @@ export default function Question({ setCurrentPage  }) {
           </button>
 
           <div className="ml-auto h-fit px-6 py-2 rounded-lg shadow-[5px_5px_0px_0px_#68A2B1] bg-[#80C6D7] border border-[#68A2B1]">
-            <h1 className="text-2xl  text-gray-100">Drawing 1/6</h1>
+            <h1 className="text-2xl  text-gray-100">Drawing {questionNumber}/{questions.length}</h1>
           </div>
 
           <div className="flex ml-auto">
@@ -73,7 +81,7 @@ export default function Question({ setCurrentPage  }) {
                 <p className="text-4xl mb-2 font-bold tracking-wide text-[#2c666e] drop-shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">Draw <span>🎨</span> </p>
                 <h1 className="text-9xl pb-7 animate-float tracking-wide font-bubble font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 
                  drop-shadow-[8px_8px_0px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105">
-                  { } Circle
+                  { questionNumber < (questions.length + 1) ? questions[questionNumber-1].question : "🎉" }
                 </h1>
                 <p className="text-[2em] pb-6 font-extrabold text-[#2c666e] drop-shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">in <span className="text-[#4ecdc4]">20</span> seconds ⏳</p>
 

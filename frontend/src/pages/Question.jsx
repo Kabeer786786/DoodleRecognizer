@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 
 export default function Question({ setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers  }) {
+  const timer = 30;
   let handleClose = () => {
     setTimeout(() => {
       setQuestionNumber(1);
@@ -83,7 +84,7 @@ export default function Question({ setCurrentPage, questionNumber, setQuestionNu
                  drop-shadow-[8px_8px_0px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105">
                   { questionNumber < (questions.length + 1) ? questions[questionNumber-1].question : "🎉" }
                 </h1>
-                <p className="text-[2em] pb-6 font-extrabold text-[#2c666e] drop-shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">in <span className="text-[#4ecdc4]">20</span> seconds ⏳</p>
+                <p className="text-[2em] pb-6 font-extrabold text-[#2c666e] drop-shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">in <span className="text-[#4ecdc4]">{timer}</span> seconds ⏳</p>
 
                 <button
                   className="cursor-pointer h-fit flex items-center justify-center gap-4 bg-[#80C6D7] text-white text-xl font-bold py-3 px-8 rounded-lg border border-[#68A2B1]

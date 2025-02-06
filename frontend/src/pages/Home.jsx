@@ -1,13 +1,15 @@
 /* eslint-disable react/prop-types */
-import { FaHome } from "react-icons/fa";
+import { FaGithub, FaHome } from "react-icons/fa";
 import "../assets/styles.css";
 import { motion } from 'framer-motion';
-import { FaLinkedin, FaQuestion } from "react-icons/fa6";
+import { FaQuestion } from "react-icons/fa6";
+import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-export default function Home({ setCurrentPage, questions, setQuestions }) {
+export default function Home({ setPreviousPage, setCurrentPage, questions, setQuestions }) {
   const [participantName, setParticipantName] = useState('');
   const [error, setError] = useState('');
+  const [isVisible, setIsVisible] = useState(true);
 
   const getRandomItems = (arr, num) => {
     let shuffled = [...arr].sort(() => Math.random() - 0.5); // Shuffle array
@@ -24,32 +26,41 @@ export default function Home({ setCurrentPage, questions, setQuestions }) {
       ...getRandomItems(medium, mediumlevel),
       ...getRandomItems(hard, hardlevel)
     ];
-    return selectedQuestions // Shuffle final selection
+    return selectedQuestions
   };
 
-  // Example dataset
-  const allQuestions = [
-    { id: 1, category: "easy", question: "Triangle" },
-    { id: 2, category: "easy", question: "Circle" },
-    { id: 3, category: "easy", question: "Square" },
-    { id: 4, category: "easy", question: "Sun" },
-    { id: 5, category: "easy", question: "Line" },
-    { id: 6, category: "easy", question: "Moon" },
-    { id: 7, category: "medium", question: "Cloud" },
-    { id: 8, category: "medium", question: "Face" },
-    { id: 9, category: "medium", question: "Smiley Face" },
-    { id: 10, category: "medium", question: "Apple" },
-    { id: 11, category: "medium", question: "Lightning" },
-    { id: 12, category: "medium", question: "Chair" },
-    { id: 13, category: "hard", question: "Bench" },
-    { id: 14, category: "hard", question: "Bread" },
-    { id: 15, category: "hard", question: "Mountain" },
-    { id: 16, category: "hard", question: "Grapes" },
-    { id: 17, category: "hard", question: "Laptop" },
-    { id: 18, category: "hard", question: "Tooth" },
-    { id: 19, category: "hard", question: "Table" },
-    { id: 20, category: "hard", question: "Pants" },
-  ];
+  const categories = {
+    easy: [
+      "Apple", "Baseball Bat", "Book", "Bread", "Circle", "Cloud", "Cookie", "Cup",
+      "Donut", "Door", "Eye", "Face", "Fan", "Helmet", "Ice Cream", "Key", "Ladder",
+      "Line", "Lollipop", "Moon", "Moustache", "Pants", "Paper Clip", "Pencil", "Pillow",
+      "Shorts", "Smiley Face", "Snake", "Sock", "Spoon", "Square", "Star", "Sun",
+      "Tent", "T-shirt", "Triangle", "Umbrella", "Wheel"
+    ],
+    medium: [
+      "Anvil", "Axe", "Basketball", "Beard", "Bed", "Bench", "Bicycle", "Broom",
+      "Camera", "Car", "Cat", "Ceiling Fan", "Cell Phone", "Chair", "Clock", "Coffee Cup",
+      "Drums", "Dumbbell", "Envelope", "Flower", "Frying Pan", "Hat", "Headphones",
+      "Knife", "Laptop", "Lightning", "Mountain", "Mushroom", "Pizza", "Rainbow", "Rifle",
+      "Saw", "Scissors", "Screwdriver", "Shovel", "Spider", "Stop Sign", "Suitcase",
+      "Sword", "Syringe", "Table", "Tennis Racquet", "Tooth", "Traffic Light", "Wristwatch"
+    ],
+    hard: [
+      "Airplane", "Alarm Clock", "Bird", "Butterfly", "Camera", "Cell Phone",
+      "Diving Board", "Eyeglasses", "Grapes", "Hot Dog", "Light Bulb", "Microphone",
+      "Power Outlet", "Radio", "Tortoise"
+    ]
+  };
+
+  // Generating the allQuestions array dynamically
+  const allQuestions = Object.entries(categories).flatMap(([category, questions], index) =>
+    questions.map((question, i) => ({
+      id: index * 100 + i + 1, // Generating unique ID dynamically
+      category: category,
+      question: question
+    }))
+  );
+
 
   let handlenewbie = () => {
     if (participantName === '') {
@@ -59,7 +70,9 @@ export default function Home({ setCurrentPage, questions, setQuestions }) {
       setError("Please Enter your Name *");
       return;
     }
+
     const selectedQuestions = generateQuestions(allQuestions, 2, 2, 1);
+    setIsVisible(false);
     setQuestions(selectedQuestions);
     setTimeout(() => {
       setCurrentPage('question');
@@ -75,6 +88,7 @@ export default function Home({ setCurrentPage, questions, setQuestions }) {
       return;
     }
     const selectedQuestions = generateQuestions(allQuestions, 1, 3, 2);
+    setIsVisible(false);
     setQuestions(selectedQuestions);
     setTimeout(() => {
       setCurrentPage('question');
@@ -88,6 +102,20 @@ export default function Home({ setCurrentPage, questions, setQuestions }) {
   const handleChange = (event) => {
     setParticipantName(event.target.value); // Update state when input changes
   };
+
+  const handleHelp = () => {
+    setIsVisible(false);
+    setTimeout(() => {
+      setPreviousPage('home');
+      setCurrentPage('help');
+    }, 300);
+  }
+
+  const handleGithub = () => {
+    setTimeout(() => {
+      window.location.href = 'https://github.com/Kabeer786786/DoodleRecognizer';
+    }, );
+  }
 
   return (
     <div className="flex w-screen h-screen bg-[#90ddf0] xl:p-10 relative font-comic overflow-hidden">
@@ -138,31 +166,34 @@ export default function Home({ setCurrentPage, questions, setQuestions }) {
               </button>
             </div>
           </div>
-          <motion.div
-            className="w-full h-full relative m-auto flex  "
-            initial={{ x: '100%', opacity: 0 }}
-            animate={{ x: 0, opacity: 1, transition: { duration: 1.0 } }}
-            exit={{ x: '100%', opacity: 0, transition: { duration: 1.0 } }}
-          >
-            <div className="relative h-full m-auto">
-              <img src="pandahome.png" alt="https://www.shutterstock.com/shutterstock/photos/1223113042/display_1500/stock-vector-illustration-of-giant-panda-who-climbing-bamboo-tree-to-looking-something-1223113042.jpg" className="bg-cover bg-center" />
-            </div>
-          </motion.div>
-
+          <AnimatePresence mode="wait">
+            {isVisible && (
+              <motion.div
+                className="w-full h-full relative m-auto flex"
+                initial={{ x: "100%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1, transition: { duration: 1.0 } }}
+                exit={{ x: "-100%", opacity: 0, transition: { duration: 1.0, ease: "easeInOut" } }}
+              >
+                <div className="relative h-full m-auto">
+                  <img src="pandahome.png" alt="https://www.shutterstock.com/shutterstock/photos/1223113042/display_1500/stock-vector-illustration-of-giant-panda-who-climbing-bamboo-tree-to-looking-something-1223113042.jpg" className="bg-cover bg-center" />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <button
           className="absolute cursor-pointer right-24 m-6 h-fit flex items-center justify-center gap-4  bg-[#80C6D7] text-white text-xl font-bold py-2 px-6 rounded-lg border border-[#68A2B1]
                                      shadow-[5px_5px_0px_0px_#68A2B1] transition-all duration-150 
                                      active:translate-x-1 active:translate-y-1 active:shadow-none"
-          onClick={handlehome}
+          onClick={handleGithub}
         >
-          <FaLinkedin size={"26px"} />
+          <FaGithub size={"26px"} />
         </button>
         <button
           className="absolute cursor-pointer right-0 m-6 h-fit flex items-center justify-center gap-4  bg-[#80C6D7] text-white text-xl font-bold py-2 px-6 rounded-lg border border-[#68A2B1]
                                      shadow-[5px_5px_0px_0px_#68A2B1] transition-all duration-150 
                                      active:translate-x-1 active:translate-y-1 active:shadow-none"
-          onClick={handlehome}
+          onClick={handleHelp}
         >
           <FaQuestion size={"26px"} />
         </button>
@@ -170,7 +201,6 @@ export default function Home({ setCurrentPage, questions, setQuestions }) {
           className="absolute cursor-pointer bottom-6  left-1/2 -translate-x-1/2  h-fit flex items-center justify-center gap-4  bg-[#80C6D7] text-white text-xl font-bold py-2 px-6 rounded-lg border border-[#68A2B1]
                                      shadow-[5px_5px_0px_0px_#68A2B1] transition-all duration-150 
                                      active:-translate-x-1/2 active:translate-y-1 active:shadow-none"
-          onClick={handlehome}
         >
           Developed by @ Red Hat Coders 2025
         </button>

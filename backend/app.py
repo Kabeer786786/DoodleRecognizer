@@ -60,7 +60,7 @@ def predict():
         predictions = model.predict(processed_image)[0]
 
         # Get top 5 predictions
-        top_indices = np.argsort(-predictions)[:3]
+        top_indices = np.argsort(-predictions)[:1]
         results = {
             "predictions": [class_names[i] for i in top_indices],
             "confidences": [float(predictions[i]) for i in top_indices]

@@ -10,14 +10,13 @@ export default function Answer({ score, setScore,  questionNumber, setQuestionNu
   const canvasRef = useRef(null);
   const [result, setResult] = useState("");
   const [drawing, setDrawing] = useState(false);
-  const [timer, setTimer] = useState(20);
+  const [timer, setTimer] = useState(30);
 
   useEffect(() => {
     const countdown = setInterval(() => {
       setTimer((prev) => {
         if (prev < 1) {
           clearInterval(countdown);
-          setQuestionNumber((cnt) => cnt + 1);
           handleNextQuestion();
           return 0;
         }
@@ -28,13 +27,33 @@ export default function Answer({ score, setScore,  questionNumber, setQuestionNu
     return () => clearInterval(countdown);
   }, [setCurrentPage]);
 
+  let handleClose = () => {
+    setTimeout(() => {
+      setQuestionNumber(1);
+      setCurrentPage('home');
+    }, 300);
+  };
+
+  let handleNextQuestion = () => {
+    setTimeout(() => {
+      if (questionNumber ===  (questions.length)) {
+        setCurrentPage('scorecard');
+        return;
+      }
+      setQuestionNumber((cnt) => cnt + 1);
+      setCurrentPage('question');
+    }, 300);
+  }
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     ctx.fillStyle = "#f0edee";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   }, []);
 
   const startDrawing = () => setDrawing(true);
@@ -151,23 +170,7 @@ export default function Answer({ score, setScore,  questionNumber, setQuestionNu
       .catch(error => console.error('Error:', error));
   }
 
-  let handleClose = () => {
-    setTimeout(() => {
-      setQuestionNumber(1);
-      setCurrentPage('home');
-    }, 300);
-  };
-
-  let handleNextQuestion = () => {
-    setTimeout(() => {
-      if (questionNumber ===  (questions.length)) {
-        setCurrentPage('scorecard');
-        return;
-      }
-      setQuestionNumber((cnt) => cnt + 1);
-      setCurrentPage('question');
-    }, 300);
-  }
+  
 
   return (
     <div className="relative flex w-screen h-screen bg-[#90ddf0] xl:p-10 font-comic">

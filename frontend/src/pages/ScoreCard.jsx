@@ -1,11 +1,16 @@
 /* eslint-disable react/prop-types */
-import { FaQuestion, FaXmark } from "react-icons/fa6";
+import { FaQuestion, FaRightLong, FaStar, FaXmark } from "react-icons/fa6";
 import { FaHome } from "react-icons/fa";
+import { TiTick } from "react-icons/ti";
 import "../assets/styles.css"
-import { useState } from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function ScoreCard({ localimages, setLocalImages, setPreviousPage, setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers }) {
+export default function ScoreCard({ participantid, localimages, setLocalImages, setPreviousPage, setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers }) {
+  const [topParticipants, setTopParticipants] = useState([]);
+  const [currparticipant, setCurrParticipant] = useState({});
+
   let handleClose = () => {
     setTimeout(() => {
       setQuestionNumber(1);
@@ -20,6 +25,30 @@ export default function ScoreCard({ localimages, setLocalImages, setPreviousPage
       setCurrentPage('help');
     }, 600);
   }
+
+  const fetchTopParticipants = async () => {
+    try {
+      const response = await axios.get("http://localhost:7000/top10");
+      setTopParticipants(response.data);
+    } catch (error) {
+      console.error("Error fetching top participants", error);
+    }
+  };
+
+  const fetchCurrentParticipant = async () => {
+    try {
+      const response = await axios.get(`http://localhost:7000/participant/${participantid}`);
+      setCurrParticipant(response.data);
+    } catch (error) {
+      console.error("Error fetching Current participant", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTopParticipants();
+    fetchCurrentParticipant();
+  },[participantid]);
+
 
   return (
     <div className="flex w-screen h-screen bg-[#90ddf0] xl:p-10 relative font-comic">
@@ -65,16 +94,25 @@ export default function ScoreCard({ localimages, setLocalImages, setPreviousPage
                 {/* Scorecards Section */}
                 <div className="relative w-2/3 flex flex-wrap m-auto justify-center p-8 pr-0 gap-6">
                   {questions.map((question, index) => (
-                    <div key={index} className="w-1/4 flex flex-col h-[200px] bg-[#80C6D7] text-white p-4 rounded-lg shadow-md justify-between items-center border border-[#68A2B1]">
-                      <h2 className="text-xl font-bold">{question.question}</h2>
+                    <div key={index} className="relative w-1/4  flex flex-col h-[200px] bg-[#80C6D7] text-white p-2 pb-4 rounded-lg shadow-md justify-between items-center border border-[#68A2B1]">
+                      <h2 className="text-xl pb-2 font-bold">{question.question}</h2>
 
                       {/* Display Image if Available */}
-                      {question.image && (
-                        <img src={question.image} alt={question.question} className="w-32 h-32 object-contain" />
-                      )}
-
-                      <p className="text-lg font-semibold">{Math.floor(Math.random() * 100)} pts</p>
+                      <div className="bg-white flex items-center justify-center m-auto w-36 h-36  rounded-xl">
+                        {question.image && (
+                          <img src={question.image} alt={question.question} className="w-28 h-28 object-center object-cover bg-white rounded-xl object-contain" />
+                        )}
+                      </div>
+                      <div className={`absolute bottom-2 right-2 ${question.answer ? "bg-green-500" : "bg-red-400"} border-2 border-white w-10 h-10 rounded-full`}>
+                        {
+                          question.answer ?
+                            <TiTick size={"30px"} className="m-auto flex items-center justify-center mt-0.5" /> :
+                            <FaXmark size={"26px"} className="m-auto flex items-center justify-center mt-1 pt-0.5 font-bold" />
+                        }
+                      </div>
+                      {/* {console.log(question.points)} */}
                     </div>
+
                   ))}
 
                 </div>
@@ -83,10 +121,16 @@ export default function ScoreCard({ localimages, setLocalImages, setPreviousPage
                 <div className="relative w-1/3 min-h-[430px] flex flex-col m-auto bg-[#68A2B1] p-4  rounded-lg shadow-[6px_6px_0px_0px_#80C6D7] border border-[#5A98A1] text-white mr-32">
                   <h2 className="text-2xl font-bold mb-4 text-center">Leaderboard</h2>
                   <ul className="space-y-3">
-                    {["Alice", "Bob", "Charlie", "David", "Eve"].map((name, index) => (
-                      <li key={index} className="bg-[#80C6D7] p-3 rounded-md flex justify-between shadow-md border border-[#68A2B1]">
-                        <span>{name}</span>
-                        <span>{Math.floor(Math.random() * 500)} pts</span>
+                    {
+                      <li key={currparticipant._id} className="bg-[#ffdd00] text-[#68A2B1] font-semibold p-3 rounded-md flex justify-between shadow-md border border-[#ffff00]">
+                      <span className="flex items-center gap-1.5"> <FaStar /> {currparticipant.name}</span>
+                      <span>{currparticipant.score} pts</span>
+                    </li>
+                    }
+                    {topParticipants.map((participant) => (
+                      <li key={participant._id} className="bg-[#80C6D7] p-3 rounded-md flex justify-between shadow-md border border-[#68A2B1]">
+                        <span>{participant.name}</span>
+                        <span>{participant.score} pts</span>
                       </li>
                     ))}
                   </ul>

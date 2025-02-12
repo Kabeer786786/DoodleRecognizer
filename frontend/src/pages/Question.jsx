@@ -4,8 +4,9 @@ import { FaAngleDoubleRight } from "react-icons/fa";
 import "../assets/styles.css"
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import axios from "axios";
 
-export default function Question({ localimages, setLocalImages, setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers  }) {
+export default function Question({ setParticipantId, participantName, localimages, setLocalImages, setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers  }) {
   const timer = 30;
   let handleClose = () => {
     setTimeout(() => {
@@ -14,9 +15,43 @@ export default function Question({ localimages, setLocalImages, setCurrentPage, 
     }, 300);
   }; 
 
+  async function handleSubmitBackend() {
+    const formData = {
+      name: participantName,
+      score: questions.reduce((sum, question) => sum + question.points, 0),
+      images: [], // Array to store Base64 images
+      imageNames: [], // Array to store category names
+    };
+  
+    // Convert each image to Base64 and add it to formData
+    questions.forEach((question) => {
+      if (question.image) {
+        formData.images.push(question.image); // Base64 image
+        formData.imageNames.push(question.question); // Category name
+      }
+    });
+  
+    try {
+      const response = await axios.post("http://localhost:7000/submit", formData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log(response.data)
+      console.log(response.data.participant._id)
+      setParticipantId(response.data.participant._id);
+    } catch (error) {
+      console.error("❌ Error submitting data:", error.response?.data || error.message);
+    }
+  }
+
   let handleNextQuestion = () => {
     setIsVisible(false);
+    
     setTimeout(() => {
+      if (questionNumber === (questions.length)) {
+        handleSubmitBackend();
+        setCurrentPage('scorecard');
+        return;
+      }
       setCurrentPage(questionNumber ===  (questions.length) ? 'scorecard' : 'loading'); // Temporary state to force re-render
       setTimeout(() => {
         setQuestionNumber((prev) => prev + 1);

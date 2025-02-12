@@ -5,12 +5,15 @@ import { FaAngleDoubleRight } from "react-icons/fa";
 import { FaEraser } from "react-icons/fa";
 import "../assets/styles.css"
 import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
+import axios from "axios";
 
-export default function Answer({ localimages, setLocalImages, score, setScore, questionNumber, setQuestionNumber, setCurrentPage, questions, setQuestions, answers, setAnswers, selectedAnswer, setSelectedAnswer }) {
+export default function Answer({ setParticipantId, participantName, localimages, setLocalImages, score, setScore, questionNumber, setQuestionNumber, setCurrentPage, questions, setQuestions, answers, setAnswers, selectedAnswer, setSelectedAnswer }) {
   const canvasRef = useRef(null);
   const [result, setResult] = useState("");
   const [drawing, setDrawing] = useState(false);
   const [timer, setTimer] = useState(30);
+  const [complete,setComplete] = useState(false);
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -19,13 +22,16 @@ export default function Answer({ localimages, setLocalImages, score, setScore, q
           clearInterval(countdown);
           handleNextQuestion();
           return 0;
+        }else if(complete){
+          return prev;
+        }else{
+          return prev - 1;
         }
-        return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(countdown);
-  }, [setCurrentPage]);
+  }, [setCurrentPage, complete]);
 
   let handleClose = () => {
     setTimeout(() => {
@@ -34,9 +40,38 @@ export default function Answer({ localimages, setLocalImages, score, setScore, q
     }, 300);
   };
 
+  async function handleSubmitBackend() {
+    const formData = {
+      name: participantName,
+      score: questions.reduce((sum, question) => sum + question.points, 0),
+      images: [], // Array to store Base64 images
+      imageNames: [], // Array to store category names
+    };
+  
+    // Convert each image to Base64 and add it to formData
+    questions.forEach((question) => {
+      if (question.image) {
+        formData.images.push(question.image); // Base64 image
+        formData.imageNames.push(question.question); // Category name
+      }
+    });
+  
+    try {
+      const response = await axios.post("http://localhost:7000/submit", formData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log(response.data)
+      console.log(response.data.participant._id)
+      setParticipantId(()=> response.data.participant._id);
+    } catch (error) {
+      console.error("❌ Error submitting data:", error.response?.data || error.message);
+    }
+  }
+
   let handleNextQuestion = () => {
     setTimeout(() => {
       if (questionNumber === (questions.length)) {
+        handleSubmitBackend();
         setCurrentPage('scorecard');
         return;
       }
@@ -62,7 +97,7 @@ export default function Answer({ localimages, setLocalImages, score, setScore, q
   const draw = (event) => {
     if (!drawing) return;
 
-    event.preventDefault();
+    // event.preventDefault();
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const rect = canvas.getBoundingClientRect();
@@ -152,10 +187,10 @@ export default function Answer({ localimages, setLocalImages, score, setScore, q
     let resizedImageUrl = finalCanvas.toDataURL("image/png");
 
     // Save both images in the question object
-    updateQuestionWithImage(questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : "🎉", originalImageUrl, resizedImageUrl);
+    updateQuestionWithImage(questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : "", originalImageUrl, resizedImageUrl);
 
     // Send the resized image to backend
-    sendToBackend(originalImageUrl);
+    sendToBackend(resizedImageUrl);
   }
 
   const updateQuestionWithImage = (questionText, imageUrl) => {
@@ -164,6 +199,16 @@ export default function Answer({ localimages, setLocalImages, score, setScore, q
     setQuestions((prevQuestions) =>
       prevQuestions.map((q) =>
         q.question === questionText ? { ...q, image: imageUrl, timestamp } : q
+      )
+    );
+  };
+
+  const updateAnswer = (questionText, questionAnswer, currpoints) => {
+    const timestamp = Date.now(); // Get the current timestamp
+
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) =>
+        q.question === questionText ? { ...q, answer: questionAnswer, points: currpoints, timestamp } : q
       )
     );
   };
@@ -180,7 +225,7 @@ export default function Answer({ localimages, setLocalImages, score, setScore, q
       .then(response => response.json())
       .then(data => {
         if (data.predictions) {
-          setResult(data.predictions.join(', '));
+          setResult(data.predictions[0].replace('_', ' '));
         } else if (data.error) {
           setResult(data.error);
         }
@@ -189,6 +234,47 @@ export default function Answer({ localimages, setLocalImages, score, setScore, q
   }
 
 
+  useEffect(() => {
+    if (result.toLowerCase().trim() === (questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : "").toLowerCase().trim()) {
+      updateAnswer((questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : ""), true, (timer) * 5);
+      setComplete(true);
+      launchConfetti();
+      setTimeout(() => {
+        handleNextQuestion();
+      }, 2500);
+    }
+  }, [result])
+
+  function launchConfetti() {
+    var duration = 2 * 1000; // 2 seconds
+    var animationEnd = Date.now() + duration;
+    var skew = 1;
+
+    (function frame() {
+      var timeLeft = animationEnd - Date.now();
+      var ticks = Math.max(200 * (timeLeft / duration), 0);
+      skew = Math.max(0.8, skew - 0.001);
+
+      confetti({
+        particleCount: 6,
+        startVelocity: 15,
+        spread: 70,
+        gravity: 0.6, // Makes confetti float slowly
+        decay: 0.9, // Slows down disappearance
+        scalar: 1.2, // Increases particle size
+        shapes: ["circle", "square", "star"],
+        colors: ["#ffffff", "#fd9d1d", "#ffdb00", "#ff7999", "#90ddf0", "#ffffee"],
+        origin: {
+          x: Math.random(),
+          y: Math.random() - 0.1,
+        },
+      });
+
+      if (ticks > 0) {
+        requestAnimationFrame(frame);
+      }
+    })();
+  };
 
   return (
     <div className="relative flex w-screen h-screen bg-[#90ddf0] xl:p-10 font-comic">
@@ -217,7 +303,7 @@ export default function Answer({ localimages, setLocalImages, score, setScore, q
           >
             <FaXmark size={"26px"} />
           </button>
-          <h1 className="flex items-center absolute left-30 text-2xl top-4"> {questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : "🎉"} </h1>
+          <h1 className="flex items-center absolute left-30 text-2xl top-4"> {questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : "Time Pass"} </h1>
 
           <div className="flex gap-4 ml-auto ">
             <div className="h-fit w-fit px-5 py-2 rounded-lg shadow-[5px_5px_0px_0px_#68A2B1] bg-[#80C6D7] border border-[#68A2B1]">
@@ -253,7 +339,7 @@ export default function Answer({ localimages, setLocalImages, score, setScore, q
         >
           <div className=" font-comic text-[#f0edee] relative px-8 py-1.5">
             {/* Notification Text */}
-            <p className="text-center tracking-wide text-2xl pb-2" id="result"> {result || ". . ."} </p>
+            <p className={`text-center tracking-wide text-2xl pb-2 ${(questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : "Time Pass").answer ? "text-green-500 text-3xl" : ""}`} id="result"> {result || ". . ."} </p>
 
             {/* Triangle Pointer */}
             <div className="absolute bottom-[-13px] left-1/2 transform -translate-x-1/2 

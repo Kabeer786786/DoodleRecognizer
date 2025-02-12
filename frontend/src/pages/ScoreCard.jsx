@@ -5,7 +5,7 @@ import "../assets/styles.css"
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function ScoreCard({ setPreviousPage ,setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers  }) {
+export default function ScoreCard({ localimages, setLocalImages, setPreviousPage, setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers }) {
   let handleClose = () => {
     setTimeout(() => {
       setQuestionNumber(1);
@@ -65,11 +65,18 @@ export default function ScoreCard({ setPreviousPage ,setCurrentPage, questionNum
                 {/* Scorecards Section */}
                 <div className="relative w-2/3 flex flex-wrap m-auto justify-center p-8 pr-0 gap-6">
                   {questions.map((question, index) => (
-                    <div key={index} className="w-1/4 flex h-[200px] bg-[#80C6D7] text-white p-4 rounded-lg shadow-md flex justify-between items-center border border-[#68A2B1]">
-                      <h2 className="text-xl font-bold">Score {question.id}</h2>
+                    <div key={index} className="w-1/4 flex flex-col h-[200px] bg-[#80C6D7] text-white p-4 rounded-lg shadow-md justify-between items-center border border-[#68A2B1]">
+                      <h2 className="text-xl font-bold">{question.question}</h2>
+
+                      {/* Display Image if Available */}
+                      {question.image && (
+                        <img src={question.image} alt={question.question} className="w-32 h-32 object-contain" />
+                      )}
+
                       <p className="text-lg font-semibold">{Math.floor(Math.random() * 100)} pts</p>
                     </div>
                   ))}
+
                 </div>
 
                 {/* Leaderboard Section */}

@@ -6,7 +6,7 @@ import { FaEraser } from "react-icons/fa";
 import "../assets/styles.css"
 import { motion } from "framer-motion";
 
-export default function Answer({ score, setScore,  questionNumber, setQuestionNumber ,setCurrentPage, questions, setQuestions, answers, setAnswers, selectedAnswer, setSelectedAnswer }) {
+export default function Answer({ localimages, setLocalImages, score, setScore, questionNumber, setQuestionNumber, setCurrentPage, questions, setQuestions, answers, setAnswers, selectedAnswer, setSelectedAnswer }) {
   const canvasRef = useRef(null);
   const [result, setResult] = useState("");
   const [drawing, setDrawing] = useState(false);
@@ -36,7 +36,7 @@ export default function Answer({ score, setScore,  questionNumber, setQuestionNu
 
   let handleNextQuestion = () => {
     setTimeout(() => {
-      if (questionNumber ===  (questions.length)) {
+      if (questionNumber === (questions.length)) {
         setCurrentPage('scorecard');
         return;
       }
@@ -51,7 +51,7 @@ export default function Answer({ score, setScore,  questionNumber, setQuestionNu
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     ctx.fillStyle = "#f0edee";
-    // ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   }, []);
@@ -138,6 +138,9 @@ export default function Answer({ score, setScore,  questionNumber, setQuestionNu
     let offsetY = (size - bboxHeight) / 2;
     squareCtx.drawImage(canvas, minX, minY, bboxWidth, bboxHeight, offsetX, offsetY, bboxWidth, bboxHeight);
 
+    // **Save the original cropped version before resizing**
+    let originalImageUrl = squareCanvas.toDataURL("image/png");
+
     // Resize to 28x28
     let finalCanvas = document.createElement("canvas");
     finalCanvas.width = 28;
@@ -146,11 +149,26 @@ export default function Answer({ score, setScore,  questionNumber, setQuestionNu
     finalCtx.drawImage(squareCanvas, 0, 0, 28, 28);
 
     // Convert the resized canvas to base64
-    let imageUrl = finalCanvas.toDataURL("image/png");
+    let resizedImageUrl = finalCanvas.toDataURL("image/png");
 
-    // Send to backend
-    sendToBackend(imageUrl);
+    // Save both images in the question object
+    updateQuestionWithImage(questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : "🎉", originalImageUrl, resizedImageUrl);
+
+    // Send the resized image to backend
+    sendToBackend(originalImageUrl);
   }
+
+  const updateQuestionWithImage = (questionText, imageUrl) => {
+    const timestamp = Date.now(); // Get the current timestamp
+
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) =>
+        q.question === questionText ? { ...q, image: imageUrl, timestamp } : q
+      )
+    );
+  };
+
+  // Example usage: update image for 'Sock'
 
 
   function sendToBackend(imageUrl) {
@@ -170,7 +188,7 @@ export default function Answer({ score, setScore,  questionNumber, setQuestionNu
       .catch(error => console.error('Error:', error));
   }
 
-  
+
 
   return (
     <div className="relative flex w-screen h-screen bg-[#90ddf0] xl:p-10 font-comic">
@@ -199,7 +217,7 @@ export default function Answer({ score, setScore,  questionNumber, setQuestionNu
           >
             <FaXmark size={"26px"} />
           </button>
-          <h1 className="flex items-center absolute left-30 text-2xl top-4"> { questionNumber <  (questions.length+1) ? questions[questionNumber-1].question : "🎉" } </h1>
+          <h1 className="flex items-center absolute left-30 text-2xl top-4"> {questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : "🎉"} </h1>
 
           <div className="flex gap-4 ml-auto ">
             <div className="h-fit w-fit px-5 py-2 rounded-lg shadow-[5px_5px_0px_0px_#68A2B1] bg-[#80C6D7] border border-[#68A2B1]">

@@ -5,7 +5,7 @@ import "../assets/styles.css"
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 
-export default function Question({ setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers  }) {
+export default function Question({ localimages, setLocalImages, setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers  }) {
   const timer = 30;
   let handleClose = () => {
     setTimeout(() => {

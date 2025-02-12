@@ -14,15 +14,16 @@ function App() {
   const [questions, setQuestions] = useState([]); // Track the questions
   const [answers, setAnswers] = useState([]); // Track the answers
   const [selectedAnswer, setSelectedAnswer] = useState(''); // Track the selected answer
+  const [localimages,setLocalImages] = useState([]);  // {category: '', image: '', timestamp:'' }
 
   return (
     <>
       {currentPage === 'loading' && <Loading questions={questions}  />}
       {currentPage === 'help' && <Help previousPage={previousPage} setCurrentPage={setCurrentPage} setQuestionNumber={setQuestionNumber} />}
-      {currentPage === 'home' && <Home setPreviousPage={setPreviousPage} setCurrentPage={setCurrentPage} questions={questions} setQuestions={setQuestions} />}
-      {currentPage === 'question' && <Question  setCurrentPage={setCurrentPage}  questionNumber={questionNumber} setQuestionNumber={setQuestionNumber} questions={questions} setQuestions={setQuestions} answers={answers} setAnswers={setAnswers} />}
-      {currentPage === 'answer' && <Answer score={score} setScore={setScore}  questionNumber={questionNumber} setQuestionNumber={setQuestionNumber} setCurrentPage={setCurrentPage} questions={questions} setQuestions={setQuestions} answers={answers} setAnswers={setAnswers} selectedAnswer={selectedAnswer} setSelectedAnswer={setSelectedAnswer} />}
-      {currentPage === 'scorecard' && <ScoreCard setPreviousPage={setPreviousPage} setCurrentPage={setCurrentPage}  questionNumber={questionNumber} setQuestionNumber={setQuestionNumber} questions={questions} setQuestions={setQuestions} answers={answers} setAnswers={setAnswers}   />}
+      {currentPage === 'home' && <Home localimages={localimages} setLocalImages={setLocalImages} setPreviousPage={setPreviousPage} setCurrentPage={setCurrentPage} questions={questions} setQuestions={setQuestions} />}
+      {currentPage === 'question' && <Question localimages={localimages} setLocalImages={setLocalImages} setCurrentPage={setCurrentPage}  questionNumber={questionNumber} setQuestionNumber={setQuestionNumber} questions={questions} setQuestions={setQuestions} answers={answers} setAnswers={setAnswers} />}
+      {currentPage === 'answer' && <Answer localimages={localimages} setLocalImages={setLocalImages} score={score} setScore={setScore}  questionNumber={questionNumber} setQuestionNumber={setQuestionNumber} setCurrentPage={setCurrentPage} questions={questions} setQuestions={setQuestions} answers={answers} setAnswers={setAnswers} selectedAnswer={selectedAnswer} setSelectedAnswer={setSelectedAnswer} />}
+      {currentPage === 'scorecard' && <ScoreCard localimages={localimages} setLocalImages={setLocalImages} setPreviousPage={setPreviousPage} setCurrentPage={setCurrentPage}  questionNumber={questionNumber} setQuestionNumber={setQuestionNumber} questions={questions} setQuestions={setQuestions} answers={answers} setAnswers={setAnswers}   />}
     </>
   );
 }

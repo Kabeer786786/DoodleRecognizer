@@ -6,8 +6,9 @@ import { FaQuestion } from "react-icons/fa6";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-export default function Home({ setPreviousPage, setCurrentPage, questions, setQuestions }) {
+export default function Home({ localimages, setLocalImages, setPreviousPage, setCurrentPage, questions, setQuestions }) {
   const [participantName, setParticipantName] = useState('');
+  const [images, setImages] = useState([]); // Stores { category, file, preview }
   const [error, setError] = useState('');
   const [isVisible, setIsVisible] = useState(true);
 
@@ -57,7 +58,9 @@ export default function Home({ setPreviousPage, setCurrentPage, questions, setQu
     questions.map((question, i) => ({
       id: index * 100 + i + 1, // Generating unique ID dynamically
       category: category,
-      question: question
+      question: question,
+      image: '',
+      timestamp:'',
     }))
   );
 
@@ -72,6 +75,7 @@ export default function Home({ setPreviousPage, setCurrentPage, questions, setQu
     }
 
     const selectedQuestions = generateQuestions(allQuestions, 2, 2, 1);
+    console.log(selectedQuestions);
     setIsVisible(false);
     setQuestions(selectedQuestions);
     setTimeout(() => {

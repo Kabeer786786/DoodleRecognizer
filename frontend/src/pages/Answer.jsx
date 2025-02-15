@@ -190,7 +190,7 @@ export default function Answer({ setParticipantId, participantName, localimages,
     updateQuestionWithImage(questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : "", originalImageUrl, resizedImageUrl);
 
     // Send the resized image to backend
-    sendToBackend(resizedImageUrl);
+    sendToBackend(originalImageUrl);
   }
 
   const updateQuestionWithImage = (questionText, imageUrl) => {
@@ -236,7 +236,7 @@ export default function Answer({ setParticipantId, participantName, localimages,
 
   useEffect(() => {
     if (result.toLowerCase().trim() === (questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : "").toLowerCase().trim()) {
-      updateAnswer((questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : ""), true, (timer) * 5);
+      updateAnswer((questionNumber < (questions.length + 1) ? questions[questionNumber - 1].question : ""), true, ((timer)+1) * 5);
       setComplete(true);
       launchConfetti();
       setTimeout(() => {

@@ -6,7 +6,7 @@ import { FaQuestion } from "react-icons/fa6";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-export default function Home({participantName, setParticipantName, localimages, setLocalImages, setPreviousPage, setCurrentPage, questions, setQuestions }) {
+export default function Home({ participantName, setParticipantName, localimages, setLocalImages, setPreviousPage, setCurrentPage, questions, setQuestions }) {
   const [images, setImages] = useState([]); // Stores { category, file, preview }
   const [error, setError] = useState('');
   const [isVisible, setIsVisible] = useState(true);
@@ -31,24 +31,24 @@ export default function Home({participantName, setParticipantName, localimages, 
 
   const categories = {
     easy: [
-      "Apple", "Baseball Bat", "Book", "Bread", "Circle", "Cloud", "Cookie", "Cup",
-      "Donut", "Door", "Eye", "Face", "Fan", "Helmet", "Ice Cream", "Key", "Ladder",
-      "Line", "Lollipop", "Moon", "Moustache", "Pants", "Paper Clip", "Pencil", "Pillow",
-      "Shorts", "Smiley Face", "Snake", "Sock", "Spoon", "Square", "Star", "Sun",
-      "Tent", "T-shirt", "Triangle", "Umbrella", "Wheel"
+      "Apple", "Book", "Bread", "Circle", "Cloud", "Cookie",
+      "Donut", "Door", "Eye",  "Ladder",
+      "Line", "Lollipop", "Moon", "Moustache", "Pants", "Pencil", "Pillow",
+      "Shorts", "Smiley Face", "Snake", "Sock", "Square", "Star", "Sun",
+      "T-shirt", "Triangle", "Umbrella", "Wheel"
     ],
     medium: [
-      "Anvil", "Axe", "Basketball", "Beard", "Bed", "Bench", "Bicycle", "Broom",
-      "Camera", "Car", "Cat", "Ceiling Fan", "Cell Phone", "Chair", "Clock", "Coffee Cup",
-      "Drums", "Dumbbell", "Envelope", "Flower", "Frying Pan", "Hat", "Headphones",
-      "Knife", "Laptop", "Lightning", "Mountain", "Mushroom", "Pizza", "Rainbow", "Rifle",
-      "Saw", "Scissors", "Screwdriver", "Shovel", "Spider", "Stop Sign", "Suitcase",
-      "Sword", "Syringe", "Table", "Tennis Racquet", "Tooth", "Traffic Light", "Wristwatch"
+      "Axe", "Basketball", "Beard", "Bench", "Bicycle", "Broom",
+      "Car", "Cat", "Chair", "Clock", "Coffee Cup",
+      "Drums", "Envelope", "Flower", "Hat",
+      "Laptop", "Lightning", "Mountain", "Mushroom", "Rainbow",
+      "Saw",
+      "Syringe", "Tooth",
     ],
     hard: [
-      "Airplane", "Alarm Clock", "Bird", "Butterfly", "Camera", "Cell Phone",
-      "Diving Board", "Eyeglasses", "Grapes", "Hot Dog", "Light Bulb", "Microphone",
-      "Power Outlet", "Radio", "Tortoise"
+      "Alarm Clock", "Bird", "Butterfly", "Scissors", "Spider", "Suitcase",
+      "Diving Board", "Eyeglasses", "Grapes", "Light Bulb",
+      "Power Outlet",
     ]
   };
 
@@ -61,7 +61,7 @@ export default function Home({participantName, setParticipantName, localimages, 
       image: '',
       answer: false,
       points: 0,
-      timestamp:'',
+      timestamp: '',
     }))
   );
 
@@ -119,7 +119,7 @@ export default function Home({participantName, setParticipantName, localimages, 
   const handleGithub = () => {
     setTimeout(() => {
       window.location.href = 'https://github.com/Kabeer786786/DoodleRecognizer';
-    }, );
+    },);
   }
 
   return (

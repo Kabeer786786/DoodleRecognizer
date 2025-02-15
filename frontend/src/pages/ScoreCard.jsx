@@ -14,7 +14,8 @@ export default function ScoreCard({ participantid, localimages, setLocalImages, 
   let handleClose = () => {
     setTimeout(() => {
       setQuestionNumber(1);
-      setCurrentPage('home');
+      window.location.reload();
+      // setCurrentPage('home');
     }, 300);
   };
   const [isVisible, setIsVisible] = useState(true);

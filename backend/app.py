@@ -10,8 +10,8 @@ app = Flask(__name__)
 CORS(app)
 
 # Load model and class names
-model = tf.keras.models.load_model("doodle_recognier_model.keras")
-with open("class_names.txt", "r") as f:
+model = tf.keras.models.load_model("FinalDoodleModel.keras")
+with open("class_names_final.txt", "r") as f:
     class_names = [line.strip() for line in f.readlines()]
 
 def preprocess_image(image_data):

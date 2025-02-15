@@ -29,28 +29,46 @@ export default function Home({ participantName, setParticipantName, localimages,
     return selectedQuestions
   };
 
-  const categories = {
+  const categories = { 
     easy: [
-      "Apple", "Book", "Bread", "Circle", "Cloud", "Cookie",
-      "Donut", "Door", "Eye",  "Ladder",
-      "Line", "Lollipop", "Moon", "Moustache", "Pants", "Pencil", "Pillow",
-      "Shorts", "Smiley Face", "Snake", "Sock", "Square", "Star", "Sun",
+      "Apple", "Book", "Bread", "Circle", "Cloud", "Line", "Lollipop",
+      "Moon", "Pants", "Pencil", "Sock", "Square", "Star", "Sun",
       "T-shirt", "Triangle", "Umbrella", "Wheel"
     ],
     medium: [
-      "Axe", "Basketball", "Beard", "Bench", "Bicycle", "Broom",
-      "Car", "Cat", "Chair", "Clock", "Coffee Cup",
-      "Drums", "Envelope", "Flower", "Hat",
-      "Laptop", "Lightning", "Mountain", "Mushroom", "Rainbow",
-      "Saw",
-      "Syringe", "Tooth",
+      "Basket", "Bench", "Camel", "Cat", "Chair", "Door", "Dolphin",
+      "Laptop", "Lightning", "Mountain", "Mug", "Mushroom", "Potato",
+      "River", "Shoe", "Snake", "Syringe", "Table", "Tooth", "Tree"
     ],
     hard: [
-      "Alarm Clock", "Bird", "Butterfly", "Scissors", "Spider", "Suitcase",
-      "Diving Board", "Eyeglasses", "Grapes", "Light Bulb",
-      "Power Outlet",
+      "Bird", "Bridge", "Candle", "Cake", "Eye", "Light Bulb", 
+      "Scissors", "Wheel"
     ]
   };
+
+
+  // const categories = {
+  //   easy: [
+  //     "Apple", "Book", "Bread", "Circle", "Cloud", "Cookie",
+  //     "Donut", "Door", "Eye",  "Ladder",
+  //     "Line", "Lollipop", "Moon", "Moustache", "Pants", "Pencil", "Pillow",
+  //     "Shorts", "Smiley Face", "Snake", "Sock", "Square", "Star", "Sun",
+  //     "T-shirt", "Triangle", "Umbrella", "Wheel"
+  //   ],
+  //   medium: [
+  //     "Axe", "Basketball", "Beard", "Bench", "Bicycle", "Broom",
+  //     "Car", "Cat", "Chair", "Clock", "Coffee Cup",
+  //     "Drums", "Envelope", "Flower", "Hat",
+  //     "Laptop", "Lightning", "Mountain", "Mushroom", "Rainbow",
+  //     "Saw",
+  //     "Syringe", "Tooth",
+  //   ],
+  //   hard: [
+  //     "Alarm Clock", "Bird", "Butterfly", "Scissors", "Spider", "Suitcase",
+  //     "Diving Board", "Eyeglasses", "Grapes", "Light Bulb",
+  //     "Power Outlet",
+  //   ]
+  // };
 
   // Generating the allQuestions array dynamically
   const allQuestions = Object.entries(categories).flatMap(([category, questions], index) =>

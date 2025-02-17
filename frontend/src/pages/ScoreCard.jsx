@@ -29,7 +29,7 @@ export default function ScoreCard({ participantid, localimages, setLocalImages, 
 
   const fetchTopParticipants = async () => {
     try {
-      const response = await axios.get("http://localhost:7000/top10");
+      const response = await axios.get("http://192.168.111.244:7000/top10");
       setTopParticipants(response.data);
     } catch (error) {
       console.error("Error fetching top participants", error);
@@ -38,7 +38,7 @@ export default function ScoreCard({ participantid, localimages, setLocalImages, 
 
   const fetchCurrentParticipant = async () => {
     try {
-      const response = await axios.get(`http://localhost:7000/participant/${participantid}`);
+      const response = await axios.get(`http://192.168.111.244:7000/participant/${participantid}`);
       setCurrParticipant(response.data);
     } catch (error) {
       console.error("Error fetching Current participant", error);

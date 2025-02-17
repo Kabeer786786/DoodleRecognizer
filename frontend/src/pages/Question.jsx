@@ -3,7 +3,7 @@ import { FaXmark } from "react-icons/fa6";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import "../assets/styles.css"
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from "axios";
 
 export default function Question({ setParticipantId, participantName, localimages, setLocalImages, setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers  }) {
@@ -32,7 +32,7 @@ export default function Question({ setParticipantId, participantName, localimage
     });
   
     try {
-      const response = await axios.post("http://localhost:7000/submit", formData, {
+      const response = await axios.post("http://192.168.111.244:7000/submit", formData, {
         headers: { "Content-Type": "application/json" },
       });
       console.log(response.data)
@@ -67,6 +67,10 @@ export default function Question({ setParticipantId, participantName, localimage
     }, 700);
   };
   const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(()=>{
+    setCurrentPage(questionNumber ===  (questions.length+1) ? 'scorecard' : 'question'); // Temporary state to force re-render
+  },[setCurrentPage]);
 
 
   return (
@@ -117,7 +121,7 @@ export default function Question({ setParticipantId, participantName, localimage
                 <p className="text-4xl mb-2 font-bold tracking-wide text-[#2c666e] drop-shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">Draw <span>🎨</span> </p>
                 <h1 className="text-9xl pb-7 animate-float tracking-wide font-bubble font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 
                  drop-shadow-[8px_8px_0px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105">
-                  { questionNumber < (questions.length + 1) ? questions[questionNumber-1].question : "🎉" }
+                  { questionNumber < (questions.length + 1) ? questions[questionNumber-1].question : "" }
                 </h1>
                 <p className="text-[2em] pb-6 font-extrabold text-[#2c666e] drop-shadow-[3px_3px_0px_rgba(0,0,0,0.2)]">in <span className="text-[#4ecdc4]">{timer}</span> seconds ⏳</p>
 

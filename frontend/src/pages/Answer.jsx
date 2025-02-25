@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import axios from "axios";
 
-export default function Answer({ setParticipantId, participantName, localimages, setLocalImages, score, setScore, questionNumber, setQuestionNumber, setCurrentPage, questions, setQuestions, answers, setAnswers, selectedAnswer, setSelectedAnswer }) {
+export default function Answer({ setParticipantId, participantName, questionNumber, setQuestionNumber, setCurrentPage, questions, setQuestions}) {
   const canvasRef = useRef(null);
   const [result, setResult] = useState("");
   const [drawing, setDrawing] = useState(false);

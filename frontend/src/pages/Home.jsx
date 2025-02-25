@@ -6,8 +6,7 @@ import { FaQuestion } from "react-icons/fa6";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-export default function Home({ participantName, setParticipantName, localimages, setLocalImages, setPreviousPage, setCurrentPage, questions, setQuestions }) {
-  const [images, setImages] = useState([]); // Stores { category, file, preview }
+export default function Home({ participantName, setParticipantName, setPreviousPage, setCurrentPage, setQuestions }) {
   const [error, setError] = useState('');
   const [isVisible, setIsVisible] = useState(true);
 

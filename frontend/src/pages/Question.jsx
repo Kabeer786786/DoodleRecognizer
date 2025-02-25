@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import axios from "axios";
 
-export default function Question({ setParticipantId, participantName, localimages, setLocalImages, setCurrentPage, questionNumber, setQuestionNumber, questions, setQuestions, answers, setAnswers  }) {
+export default function Question({ setParticipantId, participantName, setCurrentPage, questionNumber, setQuestionNumber, questions,  }) {
   const timer = 30;
   let handleClose = () => {
     setTimeout(() => {
@@ -32,7 +32,7 @@ export default function Question({ setParticipantId, participantName, localimage
     });
   
     try {
-      const response = await axios.post("http://192.168.111.244:7000/submit", formData, {
+      const response = await axios.post("http://localhost:7000/submit", formData, {
         headers: { "Content-Type": "application/json" },
       });
       console.log(response.data)

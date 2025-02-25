@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 7000;
 
 // Use 0.0.0.0 to make it accessible to all devices on the same network
-const hostname = "0.0.0.0"; 
+// const hostname = "192.168.7.244"; 
 
 // Middleware
 app.use(express.json({ limit: "10mb" })); // Support large Base64 images
@@ -111,6 +111,6 @@ app.get('/participant/:id', async (req, res) => {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ✅ Start Server
-app.listen(PORT, hostname, () => {
-    console.log(`🚀 Server running on http://${hostname}:${PORT}`);
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
